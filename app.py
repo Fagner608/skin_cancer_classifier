@@ -89,10 +89,10 @@ modelo_v3.eval()
 
 # ----- INTERFACE -----
 st.subheader("Classificação de imagens: Identificação de 7 tipos de melasmas")
-st.text('''Atenção!!! Este é um trabalho de cunho exclusivamente acedêmico; visa demonstrar a aplicação de técnicas de deep learning  na área de visão computacional. Aliás, nenhum destes modelos obtiveram desempenho minimamente aceitável!
+st.markdown('''Atenção!!! Este é um trabalho de cunho exclusivamente acedêmico; visa demonstrar a aplicação de técnicas de deep learning  na área de visão computacional. Aliás, nenhum destes modelos obtiveram desempenho minimamente aceitável!
 Portanto, nenhuma conclusão médica deve ser tomada considerando o resultado deste trabalho.
 Os modelos v1 e v3 sofrem de alto viés provocado pelo desbalanceamento do dataset, e, o modelo v2 sofre de underfitting.''')
-st.text('''1 - Procure imagens no google com os seguintes nomes:
+st.markdown('''1 - Procure imagens no google com os seguintes nomes:
                                                     'Lesões benígnas', 
                                                     'Sinais ou pintas comuns',
                                                     'Tumor benígno de pele',
@@ -105,7 +105,7 @@ uploaded_file = st.file_uploader("Escolha uma imagem...", type=["jpg", "png", "j
 
 if uploaded_file is not None:
     img = Image.open(uploaded_file).convert("RGB")
-    st.image(img, caption="Imagem carregada", use_column_width=True)
+    st.image(img, caption="Imagem carregada", width=300)
 
     # Prepara imagem
     img_tensor = transform(img).unsqueeze(0)
@@ -128,5 +128,14 @@ if uploaded_file is not None:
 
         with col:
             st.markdown(f"**{nome_modelo}**")
-            st.markdown(f"Classe prevista: **{classes[pred]}**")
-            st.bar_chart(probas.numpy())
+            st.markdown(f"<p style='font-size:15px;'>Classe prevista: <b>{classes[pred]}</b></p>", unsafe_allow_html=True)
+
+
+            fig, ax = plt.subplots()
+            ax.bar(range(len(classes)), probas.numpy())
+            ax.set_xticks(range(len(classes)))
+            ax.set_xticklabels(classes, rotation=90, fontsize = 15)
+            ax.set_ylabel("Probabilidade", fontsize = 15)
+            ax.set_ylim([0, 1])
+            st.pyplot(fig)
+
